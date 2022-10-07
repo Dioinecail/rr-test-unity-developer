@@ -1,0 +1,74 @@
+[
+  {
+    "Id": 0,
+    "Health": 3,
+    "Mana": 3,
+    "Attack": 3,
+    "Name": "Grom'Tar",
+    "Desc": "Description here"
+  },
+  {
+    "Id": 1,
+    "Health": 3,
+    "Mana": 3,
+    "Attack": 3,
+    "Name": "Grom'Dar",
+    "Desc": "Description here"
+  },
+  {
+    "Id": 2,
+    "Health": 3,
+    "Mana": 4,
+    "Attack": 5,
+    "Name": "Dar'Tar",
+    "Desc": "Description here"
+  },
+  {
+    "Id": 3,
+    "Health": 1,
+    "Mana": 2,
+    "Attack": 5,
+    "Name": "Gal'Dar",
+    "Desc": "Description here"
+  },
+  {
+    "Id": 4,
+    "Health": 4,
+    "Mana": 3,
+    "Attack": 2,
+    "Name": "Man'Jar",
+    "Desc": "Description here"
+  },
+  {
+    "Id": 5,
+    "Health": 2,
+    "Mana": 4,
+    "Attack": 2,
+    "Name": "Chop'Chop",
+    "Desc": "Description here"
+  },
+  {
+    "Id": 6,
+    "Health": 2,
+    "Mana": 4,
+    "Attack": 2,
+    "Name": "Enef'Teeh",
+    "Desc": "Description here"
+  },
+  {
+    "Id": 7,
+    "Health": 4,
+    "Mana": 2,
+    "Attack": 2,
+    "Name": "Cyb'Chi",
+    "Desc": "Description here"
+  },
+  {
+    "Id": 8,
+    "Health": 2,
+    "Mana": 4,
+    "Attack": 2,
+    "Name": "Chum'Bah",
+    "Desc": "Description here"
+  }
+]
