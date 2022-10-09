@@ -27,14 +27,21 @@ namespace Project.Cards
         }
     }
 
-    public class CardContainer : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
+    public class CardContainer : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
+        public event Action<CardContainer, PointerEventData> OnPointerEnterEvent;
+        public event Action<CardContainer, PointerEventData> OnPointerMoveEvent;
+        public event Action<CardContainer, PointerEventData> OnPointerExitEvent;
+        public event Action<CardContainer, PointerEventData> OnBeginDragEvent;
+        public event Action<CardContainer, PointerEventData> OnDragEvent;
+        public event Action<CardContainer, PointerEventData> OnEndDragEvent;
+
         private const int CARD_SORTING = 50;
 
-        [SerializeField] private UnityEvent _onPointerEnterEvent;
-        [SerializeField] private UnityEvent _onPointerExitEvent;
-        [SerializeField] private UnityEvent _onBeginDragEvent;
-        [SerializeField] private UnityEvent _onEndDragEvent;
+        [SerializeField] private UnityEvent _onPointerEnterUnityEvent;
+        [SerializeField] private UnityEvent _onPointerExitUnityEvent;
+        [SerializeField] private UnityEvent _onBeginDragUnityEvent;
+        [SerializeField] private UnityEvent _onEndDragUnityEvent;
 
         [SerializeField] private AnimatableValue _attackValue;
         [SerializeField] private AnimatableValue _manaValue;
@@ -46,25 +53,25 @@ namespace Project.Cards
         [SerializeField] private SpriteRenderer[] _cardGraphics;
         [SerializeField] private TextMeshPro[] _textGraphics;
 
-        private CardData _currentCard;
+        public Transform CachedTransform { get; private set; }
 
 
 
         public void Init(CardData card)
         {
-            _currentCard = card;
-            _attackValue.TargetValue.text = _currentCard.CurrentAttack.ToString();
-            _healthValue.TargetValue.text = _currentCard.CurrentHealth.ToString();
-            _manaValue.TargetValue.text = _currentCard.CurrentMana.ToString();
+            CachedTransform = transform;
+            _attackValue.TargetValue.text = card.CurrentAttack.ToString();
+            _healthValue.TargetValue.text = card.CurrentHealth.ToString();
+            _manaValue.TargetValue.text = card.CurrentMana.ToString();
 
             // in case it's a card from pool
-            _currentCard.onAttackChanged -= UpdateAttack;
-            _currentCard.onHealthChanged-= UpdateHealth;
-            _currentCard.onManaChanged -= UpdateMana;
+            card.onAttackChanged -= UpdateAttack;
+            card.onHealthChanged-= UpdateHealth;
+            card.onManaChanged -= UpdateMana;
 
-            _currentCard.onAttackChanged += UpdateAttack;
-            _currentCard.onHealthChanged += UpdateHealth;
-            _currentCard.onManaChanged += UpdateMana;
+            card.onAttackChanged += UpdateAttack;
+            card.onHealthChanged += UpdateHealth;
+            card.onManaChanged += UpdateMana;
         }
 
         public void SetHero(Sprite heroSprite, string name, string description)
@@ -94,21 +101,37 @@ namespace Project.Cards
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            _onBeginDragEvent?.Invoke();
+            _onBeginDragUnityEvent?.Invoke();
+            OnBeginDragEvent?.Invoke(this, eventData);
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-
+            OnDragEvent?.Invoke(this, eventData);
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            _onEndDragEvent?.Invoke();
+            _onEndDragUnityEvent?.Invoke();
+            OnEndDragEvent?.Invoke(this, eventData);
         }
 
-        public void OnPointerEnter(PointerEventData eventData) => _onPointerEnterEvent?.Invoke();
-        public void OnPointerExit(PointerEventData eventData) => _onPointerExitEvent?.Invoke();
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            _onPointerEnterUnityEvent?.Invoke();
+            OnPointerEnterEvent?.Invoke(this, eventData);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            _onPointerExitUnityEvent?.Invoke();
+            OnPointerExitEvent?.Invoke(this, eventData);
+        }
+
+        public void OnPointerMove(PointerEventData eventData)
+        {
+            OnPointerMoveEvent?.Invoke(this, eventData);
+        }
 
         private void UpdateAttack(int oldValue, int newValue)
         {

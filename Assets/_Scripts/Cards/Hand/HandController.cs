@@ -17,34 +17,71 @@ namespace Project.Cards.Hand
         [SerializeField] private Transform _deckPosition;
         [SerializeField] private float _initialMoveDuration;
         [SerializeField] private float _animationDelayPerCard;
+        [SerializeField] private float _maxPullDelta;
 
         private Transform _cardsOrigin;
         private List<CardContainer> _cardsOnHand;
         private List<CardContainer> _cardsOnTable;
         private List<Vector3> _cardOriginPositions;
         private List<Quaternion> _cardOriginRotations;
+        private Camera _camera;
+        private CardContainer _currentlyPointingContainer;
 
 
 
         private void Start()
         {
-            var handManager = ServiceLocator.Get<IHandManager>();
-            var deckManager = ServiceLocator.Get<IDeckManager>();
+            _camera = Camera.main;
 
+            var deckManager = ServiceLocator.Get<IDeckManager>();
 
             if (!deckManager.IsReady)
             {
                 deckManager.onReady += () =>
                 {
-                    _cardsOnHand = handManager.GetCardContainers();
-                    PositionCards();
+                    InitCards();
                 };
             }
             else
             {
-                _cardsOnHand = handManager.GetCardContainers();
-                PositionCards();
+                InitCards();
             }
+        }
+
+        private void Update()
+        {
+            if (_currentlyPointingContainer == null)
+                return;
+
+            var card = _currentlyPointingContainer;
+
+            var position = GetPosition(Input.mousePosition);
+
+            var index = _cardsOnHand.IndexOf(card);
+            var origin = _cardOriginPositions[index];
+            var direction = Vector3.ClampMagnitude(position - origin, _maxPullDelta);
+            var clampedPosition = origin + direction;
+
+            card.CachedTransform.position = Vector3.Lerp(card.CachedTransform.position, clampedPosition, 0.05f);
+        }
+
+        private void InitCards()
+        {
+            var handManager = ServiceLocator.Get<IHandManager>();
+
+            _cardsOnHand = handManager.GetCardContainers();
+
+            foreach (var card in _cardsOnHand)
+            {
+                card.OnPointerEnterEvent += OnPointerEnterEvent;
+                card.OnPointerMoveEvent += OnPointerMoveEvent;
+                card.OnPointerExitEvent += OnPointerExitEvent;
+                card.OnBeginDragEvent += OnBeginDragEvent;
+                card.OnDragEvent += OnDragEvent;
+                card.OnEndDragEvent += OnEndDragEvent;
+            }
+
+            PositionCards();
         }
 
         [ContextMenu("Reposition Cards")]
@@ -81,9 +118,61 @@ namespace Project.Cards.Hand
             }
         }
 
+        #region HANDLE CARD EVENTS
+
+        private void OnBeginDragEvent(CardContainer card, UnityEngine.EventSystems.PointerEventData eventData)
+        {
+
+        }
+
+        private void OnDragEvent(CardContainer card, UnityEngine.EventSystems.PointerEventData eventData)
+        {
+
+        }
+
+        private void OnEndDragEvent(CardContainer card, UnityEngine.EventSystems.PointerEventData eventData)
+        {
+
+        }
+
+        private void OnPointerEnterEvent(CardContainer card, UnityEngine.EventSystems.PointerEventData eventData)
+        {
+
+        }
+
+        private void OnPointerMoveEvent(CardContainer card, UnityEngine.EventSystems.PointerEventData eventData)
+        {
+            _currentlyPointingContainer = card;
+        }
+
+        private void OnPointerExitEvent(CardContainer card, UnityEngine.EventSystems.PointerEventData eventData)
+        {
+            if (_currentlyPointingContainer == card)
+            {
+                var index = _cardsOnHand.IndexOf(card);
+                var pos = _cardOriginPositions[index];
+                _currentlyPointingContainer.CachedTransform.DOMove(pos, 0.35f).SetEase(Ease.OutQuad);
+                _currentlyPointingContainer = null;
+            }
+        }
+
+        #endregion
+
+        private Vector3 GetPosition(Vector2 cursorPosition)
+        {
+            var ray = _camera.ScreenPointToRay(cursorPosition);
+
+            var angle = Vector3.Angle(Vector3.forward, ray.direction); // beta
+            var cosBeta = Mathf.Abs(Mathf.Cos(angle * Mathf.Deg2Rad)); // cos(beta);
+            var a = Mathf.Abs(_camera.transform.position.z); // a
+            var distance = a / cosBeta;
+
+            return ray.origin + (ray.direction * distance);
+        }
+
         private void OnDrawGizmos()
         {
-            if(_handCurve != null && _handCurve.Length == 4)
+            if (_handCurve != null && _handCurve.Length == 4)
             {
                 Utility.Math.BezierUtility.DrawBezier(_handCurve, 15);
             }
