@@ -18,6 +18,7 @@ namespace Project.Cards.Hand
         [SerializeField] private float _initialMoveDuration;
         [SerializeField] private float _animationDelayPerCard;
         [SerializeField] private float _maxPullDelta;
+        [SerializeField] private float _cardsSpreadZ;
 
         private Transform _cardsOrigin;
         private List<CardContainer> _cardsOnHand;
@@ -55,9 +56,9 @@ namespace Project.Cards.Hand
 
             var card = _currentlyPointingContainer;
 
-            var position = GetPosition(Input.mousePosition);
-
             var index = _cardsOnHand.IndexOf(card);
+            var position = GetPosition(Input.mousePosition, index);
+
             var origin = _cardOriginPositions[index];
             var direction = Vector3.ClampMagnitude(position - origin, _maxPullDelta);
             var clampedPosition = origin + direction;
@@ -96,6 +97,7 @@ namespace Project.Cards.Hand
                 _cardsOnHand[i].transform.rotation = _deckPosition.rotation;
                 var lerp = (float)(i + 0.5) / _cardsOnHand.Count;
                 var pos = BezierUtility.Bezier(_handCurve, lerp);
+                pos.z += i * _cardsSpreadZ;
                 _cardOriginPositions.Add(pos);
 
                 var direction = (pos - _handOrigin.position).normalized;
@@ -158,14 +160,14 @@ namespace Project.Cards.Hand
 
         #endregion
 
-        private Vector3 GetPosition(Vector2 cursorPosition)
+        private Vector3 GetPosition(Vector2 cursorPosition, int index)
         {
             var ray = _camera.ScreenPointToRay(cursorPosition);
 
             var angle = Vector3.Angle(Vector3.forward, ray.direction); // beta
             var cosBeta = Mathf.Abs(Mathf.Cos(angle * Mathf.Deg2Rad)); // cos(beta);
-            var a = Mathf.Abs(_camera.transform.position.z); // a
-            var distance = a / cosBeta;
+            var a = Mathf.Abs(ray.origin.z - index * _cardsSpreadZ); // a
+            var distance = (a / cosBeta);
 
             return ray.origin + (ray.direction * distance);
         }

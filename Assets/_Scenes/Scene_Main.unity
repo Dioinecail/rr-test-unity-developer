@@ -344,6 +344,7 @@ MonoBehaviour:
   _initialMoveDuration: 1.2
   _animationDelayPerCard: 0.5
   _maxPullDelta: 0.35
+  _cardsSpreadZ: -0.1
 --- !u!1 &339642952
 GameObject:
   m_ObjectHideFlags: 0
