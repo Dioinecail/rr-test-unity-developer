@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: Services_Default
   m_EditorClassIdentifier: 
   Entries:
+  - m_Interface: Project.Utility.Resources.IImageLoader
+    m_Implementation: Project.Utility.Resources.CachedImageLoader
   - m_Interface: Project.FileSystem.IFileManager
     m_Implementation: Project.FileSystem.StandaloneFileManager

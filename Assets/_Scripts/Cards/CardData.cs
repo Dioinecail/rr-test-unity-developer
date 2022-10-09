@@ -22,6 +22,14 @@ namespace Project.Cards
 
 
 
+        public CardData(int id, int health, int mana, int attack)
+        {
+            this.Id = id;
+            this._currentHealth = health;
+            this._currentMana = mana;
+            this._currentAttack = attack;
+        }
+
         public void ChangeHealth(int amount)
         {
             var oldValue = _currentHealth;

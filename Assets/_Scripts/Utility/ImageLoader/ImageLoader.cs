@@ -3,18 +3,17 @@ using Project.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
 namespace Project.Utility.Resources
 {
-    [DefaultImplementation(typeof(IImageLoader))]
     public class ImageLoader : IImageLoader
     {
         private const string RANDOM_IMAGES_URL = "https://picsum.photos/256";
         private const int SPRITE_WIDTH = 256;
         private const int SPRITE_HEIGHT = 256;
-
 
         private ICoroutineManager _coroutineManager;
 
@@ -28,23 +27,24 @@ namespace Project.Utility.Resources
 
         private IEnumerator DownloadImages(int count, Action<float> progressCallback, Action<List<Sprite>> finishCallback)
         {
-            UnityWebRequest downloadRequest = new UnityWebRequest(RANDOM_IMAGES_URL);
-            downloadRequest.downloadHandler = new DownloadHandlerTexture();
-
             List<Sprite> images = new List<Sprite>(count);
-            UnityWebRequestAsyncOperation operation = null;
+
+            List<UnityWebRequestAsyncOperation> downloadOperations = new List<UnityWebRequestAsyncOperation>();
 
             for (int i = 0; i < count; i++)
             {
-                operation = downloadRequest.SendWebRequest();
+                UnityWebRequest downloadRequest = new UnityWebRequest(RANDOM_IMAGES_URL);
+                downloadRequest.downloadHandler = new DownloadHandlerTexture();
 
-                while(!operation.isDone)
-                {
-                    // progress callback logic here
-                    yield return null;
-                }
+                downloadOperations.Add(downloadRequest.SendWebRequest());
+            }
 
-                var tex = DownloadHandlerTexture.GetContent(downloadRequest);
+            while (downloadOperations.Any(o => !o.isDone))
+                yield return null;
+
+            foreach (var doperation in downloadOperations)
+            {
+                var tex = DownloadHandlerTexture.GetContent(doperation.webRequest);
                 Sprite sprite = Sprite.Create(tex, new Rect(0, 0, SPRITE_WIDTH, SPRITE_HEIGHT), new Vector2(0.5f, 0.5f));
                 images.Add(sprite);
             }

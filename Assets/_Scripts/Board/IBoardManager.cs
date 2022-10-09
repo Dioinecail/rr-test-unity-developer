@@ -10,25 +10,12 @@ namespace Project.Board
     /// <summary>
     /// Basically game manager
     /// </summary>
-    public class IBoardManager : IService
+    public interface IBoardManager : IService
     {
-        private Player[] _players;
+        event Action<int> onTurnStarted;
+        event Action<int> onTurnEnded;
 
-
-
-        public void Init()
-        {
-            _players = CreatePlayers();
-        }
-
-        public void Clean()
-        {
-
-        }
-
-        private Player[] CreatePlayers()
-        {
-            return null;
-        }
+        void HandleTurnStarted();
+        void HandleTurnEnded();
     }
 }

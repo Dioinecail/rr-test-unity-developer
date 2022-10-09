@@ -6,9 +6,10 @@ using UnityEngine;
 
 namespace Project.Utility.Pools
 {
+    [DefaultImplementation(typeof(ICardsPool))]
     public class CardsPool : ICardsPool
     {
-        private static string PREFAB_PATH = "Prefabs/Prefab_CardContainer.prefab";
+        private static string PREFAB_PATH = "Prefabs/Prefab_CardContainer";
         private const int PREWARM_INSTANTIATE = 10;
 
         private Stack<CardContainer> _pool;
@@ -39,6 +40,7 @@ namespace Project.Utility.Pools
 
         public void Init()
         {
+            _pool = new Stack<CardContainer>();
             _prefab = ServiceLocator.Get<IFileManager>().LoadResource<GameObject>(PREFAB_PATH);
 
             Prewarm();

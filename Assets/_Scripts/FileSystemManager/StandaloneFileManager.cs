@@ -80,5 +80,45 @@ namespace Project.FileSystem
                 }
             }
         }
+
+        public bool WriteTexture(string path, Texture2D data)
+        {
+            var byteData = data.EncodeToPNG();
+
+            var dir = Path.GetDirectoryName(path);
+
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
+            if (File.Exists(path))
+                File.Delete(path);
+
+            try
+            {
+                File.WriteAllBytes(path, byteData);
+
+                return true;
+            }
+            catch(System.Exception ex)
+            {
+                Debug.LogError(ex);
+                return false;
+            }
+        }
+
+        public Texture2D ReadTexture(string path)
+        {
+            if (!File.Exists(path))
+                return null;
+
+            var file = File.ReadAllBytes(path);
+
+            var texture = new Texture2D(2, 2);
+            texture.LoadImage(file);
+
+            return texture;
+        }
     }
 }

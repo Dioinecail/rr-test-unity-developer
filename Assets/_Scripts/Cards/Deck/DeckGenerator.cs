@@ -25,12 +25,11 @@ namespace Project.Cards
 
         public static Dictionary<int, CardInfo> GenerateCards()
         {
+            var cards = new Dictionary<int, CardInfo>();
+
             var fileManager = ServiceLocator.Get<IFileManager>();
             var cardsDataJson = fileManager.ReadAllText(_cardsPath);
-
             var cardsData = JsonConvert.DeserializeObject<List<CardInfo>>(cardsDataJson);
-
-            var cards = new Dictionary<int, CardInfo>();
 
             foreach (var card in cardsData)
             {

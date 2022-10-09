@@ -1,18 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using System;
 
-public class BoardManager : MonoBehaviour
+namespace Project.Board
 {
-    // Start is called before the first frame update
-    void Start()
+    public class BoardManager : IBoardManager
     {
-        
-    }
+        public event Action<int> onTurnStarted;
+        public event Action<int> onTurnEnded;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+
+
+        public void Init() { }
+        public void Clean() { }
+
+        public void HandleTurnEnded()
+        {
+            // some logic for future gameplay here
+        }
+
+        public void HandleTurnStarted()
+        {
+            // some logic for future gameplay here
+        }
     }
 }

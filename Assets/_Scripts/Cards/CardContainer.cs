@@ -13,40 +13,16 @@ namespace Project.Cards
     [Serializable]
     public class AnimatableValue
     {
+        public TMP_Text TargetValue;
 
-        [SerializeField] private TMP_Text _targetValue;
         [SerializeField] private Animation _animationComponent;
         [SerializeField] private float _animationSegment;
 
-        private Coroutine _coroutineAnimation;
-        private ICoroutineManager _coroutineManager;
 
 
-
-        public void Animate(int from, int to)
+        public void Animate(int to)
         {
-            if (_coroutineManager == null)
-                _coroutineManager = ServiceLocator.Get<ICoroutineManager>();
-
-            if (_coroutineAnimation != null)
-                _coroutineManager.StopCoroutine(_coroutineAnimation);
-
-            _coroutineAnimation = _coroutineManager.StartCoroutine(CoroutineAnimation(_targetValue, from, to, _animationSegment));
-        }
-
-        private IEnumerator CoroutineAnimation(TMP_Text target, int from, int to, float segmentDuration)
-        {
-            int segments = Mathf.Abs(to - from);
-
-            for (int i = 0; i < segments; i++)
-            {
-                target.text = Mathf.Lerp(from, to, (float)i / segments).ToString();
-                _animationComponent.Play(PlayMode.StopAll);
-
-                yield return new WaitForSeconds(segmentDuration);
-            }
-
-            target.text = to.ToString();
+            TargetValue.text = to.ToString();
             _animationComponent.Play(PlayMode.StopAll);
         }
     }
@@ -63,6 +39,8 @@ namespace Project.Cards
         [SerializeField] private AnimatableValue _attackValue;
         [SerializeField] private AnimatableValue _manaValue;
         [SerializeField] private AnimatableValue _healthValue;
+        [SerializeField] private TMP_Text _heroName;
+        [SerializeField] private TMP_Text _heroDescription;
         [SerializeField] private SpriteRenderer _heroImage;
         [SerializeField] private SpriteMask _heroMask;
         [SerializeField] private SpriteRenderer[] _cardGraphics;
@@ -75,14 +53,25 @@ namespace Project.Cards
         public void Init(CardData card)
         {
             _currentCard = card;
+            _attackValue.TargetValue.text = _currentCard.CurrentAttack.ToString();
+            _healthValue.TargetValue.text = _currentCard.CurrentHealth.ToString();
+            _manaValue.TargetValue.text = _currentCard.CurrentMana.ToString();
+
+            // in case it's a card from pool
+            _currentCard.onAttackChanged -= UpdateAttack;
+            _currentCard.onHealthChanged-= UpdateHealth;
+            _currentCard.onManaChanged -= UpdateMana;
+
             _currentCard.onAttackChanged += UpdateAttack;
             _currentCard.onHealthChanged += UpdateHealth;
             _currentCard.onManaChanged += UpdateMana;
         }
 
-        public void SetHeroImage(Sprite heroSprite)
+        public void SetHero(Sprite heroSprite, string name, string description)
         {
             _heroImage.sprite = heroSprite;
+            _heroName.text = name;
+            _heroDescription.text = description;
         }
 
         public void SetSorting(int index)
@@ -123,17 +112,17 @@ namespace Project.Cards
 
         private void UpdateAttack(int oldValue, int newValue)
         {
-            _attackValue.Animate(oldValue, newValue);
+            _attackValue.Animate(newValue);
         }
 
         private void UpdateMana(int oldValue, int newValue)
         {
-            _manaValue.Animate(oldValue, newValue);
+            _manaValue.Animate(newValue);
         }
 
         private void UpdateHealth(int oldValue, int newValue)
         {
-            _healthValue.Animate(oldValue, newValue);
+            _healthValue.Animate(newValue);
         }
     }
 }
