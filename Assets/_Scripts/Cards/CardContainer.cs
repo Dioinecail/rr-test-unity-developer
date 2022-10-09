@@ -54,11 +54,14 @@ namespace Project.Cards
         [SerializeField] private TextMeshPro[] _textGraphics;
 
         public Transform CachedTransform { get; private set; }
-
+        public CardData CardData { get; private set; }
+        public int Guid { get; private set; }
 
 
         public void Init(CardData card)
         {
+            CardData = card;
+            Guid = card.Guid;
             CachedTransform = transform;
             _attackValue.TargetValue.text = card.CurrentAttack.ToString();
             _healthValue.TargetValue.text = card.CurrentHealth.ToString();
@@ -85,8 +88,8 @@ namespace Project.Cards
         {
             var initialValue = CARD_SORTING * index;
 
-            _heroMask.frontSortingOrder = initialValue + 4;
-            _heroMask.backSortingOrder = initialValue + 3;
+            _heroMask.frontSortingOrder = initialValue + 5;
+            _heroMask.backSortingOrder = initialValue + 4;
 
             for (int i = 0; i < _cardGraphics.Length; i++)
             {

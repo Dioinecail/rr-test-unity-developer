@@ -1,8 +1,7 @@
 using Dioinecail.ServiceLocator;
+using Project.Cards;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Project.Board
 {
@@ -12,10 +11,16 @@ namespace Project.Board
     /// </summary>
     public interface IBoardManager : IService
     {
-        event Action<int> onTurnStarted;
-        event Action<int> onTurnEnded;
+        const int BOARD_SIZE = 7;
 
-        void HandleTurnStarted();
-        void HandleTurnEnded();
+        event Action<List<CardData>> onCardsAdded;
+        event Action<List<CardData>> onCardsRemoved;
+        event Action<List<CardData>> onCardsDestroyed;
+
+        List<CardData> Cards { get; }
+
+        void Add(CardData card, int index);
+        void Remove(int index);
+        void Destroy(int index);
     }
 }

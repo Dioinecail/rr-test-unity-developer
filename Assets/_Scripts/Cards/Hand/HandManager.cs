@@ -11,9 +11,12 @@ namespace Project.Cards.Hand
     [DefaultImplementation(typeof(IHandManager))]
     public class HandManager : IHandManager
     {
+        public event System.Action<List<CardData>> onCardsAdded;
+        public event System.Action<List<CardData>> onCardsRemoved;
+        public event System.Action<List<CardData>> onCardsDestroyed;
+
         private const int HAND_SIZE_MIN = 4;
         private const int HAND_SIZE_MAX = 7;
-        private Quaternion INITIAL_ROTATION = Quaternion.Euler(0, 90, 0);
 
         public List<CardData> Cards => _cards;
 
@@ -25,52 +28,54 @@ namespace Project.Cards.Hand
         public void AddCards(List<CardData> cards)
         {
             _cards.AddRange(cards);
+
+            onCardsAdded?.Invoke(cards);
         }
 
         public void RemoveCard(int index)
         {
+            var card = _cards[index];
+
             _cards.RemoveAt(index);
+
+            onCardsRemoved?.Invoke(new List<CardData>() { card });
         }
 
-        public List<CardContainer> GetCardContainers()
+        public void DestroyCard(int index)
         {
-            var pool = ServiceLocator.Get<ICardsPool>();
-            var cards = new List<CardContainer>();
+            var card = _cards[index];
 
-            for (int i = 0; i < _cards.Count; i++)
-            {
-                var c = _cards[i];
-                var container = pool.Instantiate();
-                container.transform.rotation = INITIAL_ROTATION;
-                container.Init(c);
-                container.SetSorting(i);
-                container.SetHero(_deckManager.GetHeroImage(c.Id), _deckManager.GetHeroName(c.Id), _deckManager.GetHeroDescription(c.Id));
-                cards.Add(container);
-            }
+            _cards.RemoveAt(index);
 
-            return cards;
+            onCardsDestroyed?.Invoke(new List<CardData>() { card });
         }
 
-        private void GetStartingCards()
+        public void AddCardsFromDeck(int amount)
         {
-            var handSize = Random.Range(HAND_SIZE_MIN, HAND_SIZE_MAX);
+            List<CardData> addedCards = new List<CardData>();
 
-            for (int i = 0; i < handSize; i++)
+            for (int i = 0; i < amount; i++)
             {
                 var cardInfo = _deckManager.GetCard();
                 var cardData = new CardData(cardInfo.Id, cardInfo.Health, cardInfo.Mana, cardInfo.Attack);
 
                 _cards.Add(cardData);
+                addedCards.Add(cardData);
             }
+
+            onCardsAdded?.Invoke(addedCards);
+        }
+
+        public void GetStartingCards()
+        {
+            var handSize = Random.Range(HAND_SIZE_MIN, HAND_SIZE_MAX);
+            AddCardsFromDeck(handSize);
         }
 
         public void Init()
         {
             _deckManager = ServiceLocator.Get<IDeckManager>();
-
             _cards = new List<CardData>();
-
-            GetStartingCards();
         }
 
         public void Clean()

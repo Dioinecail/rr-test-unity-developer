@@ -52,7 +52,7 @@ SpriteAtlas:
   m_PackedSpriteNamesToIndex:
   - T_CardOverlay
   - T_CardEffect
-  - T_Board
+  - T_HeroOverlay
   - T_CardNamePlate
   - Square
   - Circle

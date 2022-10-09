@@ -11,6 +11,7 @@ namespace Project.Cards
         public event Action<int> onCardCreated;
         public event Action<int> onCardDestroyed;
 
+        public int Guid { get; }
         public int Id { get; }
         public int CurrentHealth => _currentHealth;
         public int CurrentMana => _currentMana;
@@ -24,6 +25,7 @@ namespace Project.Cards
 
         public CardData(int id, int health, int mana, int attack)
         {
+            this.Guid = System.Guid.NewGuid().GetHashCode();
             this.Id = id;
             this._currentHealth = health;
             this._currentMana = mana;

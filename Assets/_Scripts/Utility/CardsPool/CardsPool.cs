@@ -36,6 +36,7 @@ namespace Project.Utility.Pools
         public void ReturnCard(CardContainer container)
         {
             _pool.Push(container);
+            container.gameObject.SetActive(false);
         }
 
         public void Init()
