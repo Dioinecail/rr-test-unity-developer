@@ -27,6 +27,7 @@ namespace Project.Cards.Hand
         [SerializeField] private float _recalculateMoveDuration;
         [SerializeField] private float _animationDelayPerCard;
         [SerializeField] private float _maxPullDelta;
+        [SerializeField] private float _cardLerpSpeed;
         [SerializeField] private float _cardsSpreadZ;
         [SerializeField] private Vector3 _cardHoldOffset;
 
@@ -232,7 +233,7 @@ namespace Project.Cards.Hand
             var index = _cardsOnHand.IndexOf(currenlyDraggedContainer);
             var position = GetCursorPosition(Input.mousePosition, index) + _cardHoldOffset;
 
-            currenlyDraggedContainer.CachedTransform.position = Vector3.Lerp(currenlyDraggedContainer.CachedTransform.position, position, 0.05f);
+            currenlyDraggedContainer.CachedTransform.position = Vector3.Lerp(currenlyDraggedContainer.CachedTransform.position, position, _cardLerpSpeed * Time.deltaTime);
 
             onCardDrag?.Invoke(_currenlyDraggedContainer);
         }
@@ -288,7 +289,7 @@ namespace Project.Cards.Hand
             var direction = Vector3.ClampMagnitude(position - origin, _maxPullDelta);
             var clampedPosition = origin + direction;
 
-            currentlyPointingContainer.CachedTransform.position = Vector3.Lerp(currentlyPointingContainer.CachedTransform.position, clampedPosition, 0.05f);
+            currentlyPointingContainer.CachedTransform.position = Vector3.Lerp(currentlyPointingContainer.CachedTransform.position, clampedPosition, _cardLerpSpeed * Time.deltaTime);
         }
 
         private void OnPointerExitEvent(CardContainer card, UnityEngine.EventSystems.PointerEventData eventData)

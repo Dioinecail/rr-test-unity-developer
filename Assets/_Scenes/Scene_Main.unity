@@ -580,6 +580,7 @@ MonoBehaviour:
   _recalculateMoveDuration: 0.35
   _animationDelayPerCard: 0.5
   _maxPullDelta: 0.35
+  _cardLerpSpeed: 12
   _cardsSpreadZ: -0.1
   _cardHoldOffset: {x: 1, y: -2, z: 0}
 --- !u!1 &306810902

@@ -19,7 +19,7 @@ namespace Project.Cards
 
     public static class DeckGenerator
     {
-        private static string _cardsPath = Application.dataPath + "/Cards/Cards.json";
+        private static string _cardsPath = "Cards/Cards";
 
 
 
@@ -28,7 +28,7 @@ namespace Project.Cards
             var cards = new Dictionary<int, CardInfo>();
 
             var fileManager = ServiceLocator.Get<IFileManager>();
-            var cardsDataJson = fileManager.ReadAllText(_cardsPath);
+            var cardsDataJson = fileManager.LoadResource<TextAsset>(_cardsPath).text;
             var cardsData = JsonConvert.DeserializeObject<List<CardInfo>>(cardsDataJson);
 
             foreach (var card in cardsData)
