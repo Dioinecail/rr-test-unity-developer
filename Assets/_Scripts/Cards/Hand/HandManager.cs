@@ -72,10 +72,15 @@ namespace Project.Cards.Hand
             AddCardsFromDeck(handSize);
         }
 
-        public void Init()
+        public void InitDeps()
         {
             _deckManager = ServiceLocator.Get<IDeckManager>();
             _cards = new List<CardData>();
+        }
+
+        public void Start()
+        {
+            // nothing to start
         }
 
         public void Clean()

@@ -22,7 +22,12 @@ namespace Project.Cards
 
 
 
-        public void Init()
+        public void InitDeps()
+        {
+            // no deps
+        }
+
+        public void Start()
         {
             _remainingCards = new Queue<int>();
             _heroSprites = new Dictionary<int, Sprite>();

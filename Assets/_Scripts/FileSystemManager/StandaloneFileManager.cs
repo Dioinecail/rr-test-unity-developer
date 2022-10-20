@@ -9,9 +9,14 @@ namespace Project.FileSystem
 
 
 
-        public void Init()
+        public void InitDeps()
         {
+            // no deps
+        }
 
+        public void Start()
+        {
+            // no start logic
         }
 
         public void Clean()

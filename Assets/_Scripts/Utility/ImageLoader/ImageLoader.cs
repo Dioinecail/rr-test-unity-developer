@@ -91,9 +91,14 @@ namespace Project.Utility.Resources
             finishCallback?.Invoke(images);
         }
 
-        public void Init()
+        public void InitDeps()
         {
             _coroutineManager = ServiceLocator.Get<ICoroutineManager>();
+        }
+
+        public void Start()
+        {
+            // nothing to start
         }
 
         public void Clean() { }

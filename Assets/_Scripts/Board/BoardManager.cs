@@ -18,7 +18,7 @@ namespace Project.Board
 
 
 
-        public void Init() 
+        public void InitDeps() 
         {
             _cards = new List<CardData>();
 
@@ -26,6 +26,11 @@ namespace Project.Board
             {
                 _cards.Add(null);
             }
+        }
+
+        public void Start()
+        {
+            // nothing to start
         }
 
         public void Clean() { }

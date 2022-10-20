@@ -39,9 +39,13 @@ namespace Project.Utility.Pools
             container.gameObject.SetActive(false);
         }
 
-        public void Init()
+        public void InitDeps()
         {
             _pool = new Stack<CardContainer>();
+        }
+
+        public void Start()
+        {
             _prefab = ServiceLocator.Get<IFileManager>().LoadResource<GameObject>(PREFAB_PATH);
 
             Prewarm();

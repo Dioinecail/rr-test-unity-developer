@@ -11,11 +11,16 @@ namespace Project.Core
 
 
 
-        public void Init()
+        public void InitDeps()
         {
             m_CoroutineObject = new GameObject("CoroutineMonobehaviour").AddComponent<CoroutineMonobehaviour>();
 
             Object.DontDestroyOnLoad(m_CoroutineObject.gameObject);
+        }
+
+        public void Start()
+        {
+            // nothing to start
         }
 
         public void Clean()

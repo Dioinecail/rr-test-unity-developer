@@ -126,10 +126,15 @@ namespace Project.Utility.Resources
             CacheImages(images);
         }
 
-        public void Init()
+        public void InitDeps()
         {
             _coroutineManager = ServiceLocator.Get<ICoroutineManager>();
             _fileManager = ServiceLocator.Get<IFileManager>();
+        }
+
+        public void Start()
+        {
+            // nothing to start
         }
 
         public void Clean()
